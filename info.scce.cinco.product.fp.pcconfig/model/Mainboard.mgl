@@ -1,0 +1,82 @@
+import "platform:/resource/info.scce.cinco.fp.compdsl/model/generated/ComponentDsl.ecore" as comp
+
+@primeviewer
+@mcam("check")
+@mcam_checkmodule("info.scce.cinco.product.fp.pcconfig.compdsl.checks.RAMBausteinecheck")
+@mcam_checkmodule("info.scce.cinco.product.fp.pcconfig.compdsl.checks.SocketTypCheck")
+@mcam_checkmodule("info.scce.cinco.product.fp.pcconfig.compdsl.checks.GPUCheck")
+@style("model/Configurator.style")
+graphModel Mainboard {
+	package info.scce.cinco.product.fp.pcconfig.mb
+	nsURI "http://cinco.scce.info/product/mainboard"
+	diagramExtension "mb"
+	
+	containableElements(ContainerMainboard[1,1])
+	// TODO Define the Mainboard model
+	
+///////////////////Mainboard//////////////////////////////////////////////
+	
+	@disable(resize)
+	@postCreate("info.scce.cinco.product.fp.pcconfig.hooks.PostCreateMainboard")
+	@style (mainboardRect, "${mainboardC.displayName}")
+	container ContainerMainboard {
+		@pvFileExtension("comp")
+		@pvLabel(name)
+		prime comp.Mainboard as mainboardC
+		containableElements (ContainerCPU[1,1],ContainerRAM,ContainerGPU) 
+		
+	}
+	
+//////////////////////Container///////////////////////////////////////////
+    @disable(resize,delete,move,create)
+	@style (cpuContainer, "${name}")
+	container ContainerCPU {
+		attr EString as name
+		containableElements (CPU[1,1])
+	}
+	
+	@disable(resize,delete,move,create)
+	@style (ramContainer, "${name}")
+	container ContainerRAM {
+		attr EString as name
+		containableElements (RAM[0,1])
+	}
+	
+	@disable(resize,delete,move,create)
+	@style (gpuContainer, "${name}")
+	container ContainerGPU {
+		attr EString as name
+		containableElements (GPU[0,1])
+	}
+	
+/////////////////////////Primereference/////////////////////////////////////
+	@postCreate("info.scce.cinco.product.fp.pcconfig.hooks.CPUPostCreate")
+	@disable(resize)
+	@style (cpuRectangle, "${cpu.displayName}")
+	node CPU {
+		@pvFileExtension("comp")
+		@pvLabel(name)
+		prime comp.CPU as cpu
+	
+	}
+	
+	@postCreate("info.scce.cinco.product.fp.pcconfig.hooks.RAMPostCreate")
+	@disable(resize)
+	@style (ramRectangle, "${ram.displayName}")
+	node RAM {
+		@pvFileExtension("comp")
+		@pvLabel(name)
+		prime comp.RAM as ram
+
+	}
+	
+	@postCreate("info.scce.cinco.product.fp.pcconfig.hooks.GPUPostCreate")
+	@disable(resize)
+	@style (gpuRectangle, "${gpu.displayName}")
+	node GPU {
+		@pvFileExtension("comp")
+		@pvLabel(name)
+		prime comp.GPU as gpu
+	}
+}
+

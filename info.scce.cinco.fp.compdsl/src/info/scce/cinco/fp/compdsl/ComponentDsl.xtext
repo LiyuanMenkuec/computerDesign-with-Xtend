@@ -1,0 +1,89 @@
+grammar info.scce.cinco.fp.compdsl.ComponentDsl with org.eclipse.xtext.common.Terminals
+
+generate componentDsl "http://cinco.scce.info/fp/ComponentDsl"
+
+// TODO Define the Component DSL
+PC:
+	{PC} //In der Grammatik existiert an keiner Stelle eine Referenz auf ein PC-Objekt.
+	//soll es auch nicht. Das PC-Objekt ist nur dafür da, damit man die Generierten Komponenten in einzelnen Dateien speichern kann
+	(cpu+=CPU | ram+=RAM | drive+=Drive | case+=Case | psu+=PSU | mainboard+= Mainboard | gpu+=GPU)*
+	;
+	
+Mainboard:
+	'mainboard' displayName=STRING '{'
+	'name' name=ID
+	'chipset' chipset=STRING
+	'numMemorySlots' numMemorySlots=INT
+	'typeMemorySlots' typeMemorySlots=RAMTYPE
+	'numPCIe16Slots' numPCIe16Slots=INT
+	'numSataPorts' numSataPorts=INT
+	'powerConsumption' power=POWER
+	'socket' socket=SOCKET
+	'formFactor' formFactor=ID
+	'price' price=PRICE
+	'}';
+
+
+GPU: 
+	'gpu' displayName=STRING '{'
+	'name' name=ID
+	'chip' chip=STRING
+	'memory' memory=INT
+	'powerConsumption' power=POWER
+	'price' price=PRICE
+	'}';
+
+CPU:
+	'cpu' displayName=STRING '{'
+	'name' name=ID
+	'type' type=STRING
+	'powerConsumption' power=POWER
+	'socket' socket=SOCKET
+	'price' price=PRICE
+	'}';
+
+RAM:
+	'ram' displayName=STRING '{'
+	'name' name=ID
+	'type' ramType=RAMTYPE
+	'capacity' capacity=INT
+	'powerConsumption' power=POWER
+	'price' price=PRICE
+	'}';
+
+Drive:
+	'drive' displayName=STRING '{'
+	'name' name=ID
+	'type' type=ID
+	'description' description=STRING
+	'powerConsumption' power=POWER
+	'price' price=PRICE
+	'}';
+
+Case:
+	'case' displayName=STRING '{'
+	'name' name=ID
+	'formFactor' formFactor=ID
+	'internalSlots' internalSlots=INT
+	'externalSlots' externalSlots=INT
+	'price' price=PRICE
+	'}';
+
+PSU:
+	'psu' displayName=STRING '{'
+	'name' name=ID
+	'power' power=POWER
+	'price' price=PRICE
+	'}';
+
+terminal SOCKET:
+	'Socket' ('AM'| 'FM')? ('0'..'9')+;
+
+terminal POWER:
+	('0'..'9')+ ' W';
+
+terminal PRICE:
+	('0'..'9')+ '.' ('0'..'9')+ ' €';
+
+terminal RAMTYPE:
+	'DDR' ('0'..'9')+;

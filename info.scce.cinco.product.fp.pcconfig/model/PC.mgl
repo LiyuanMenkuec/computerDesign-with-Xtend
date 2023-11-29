@@ -1,0 +1,80 @@
+import "platform:/resource/info.scce.cinco.fp.compdsl/model/generated/ComponentDsl.ecore" as comp
+import "platform:/resource/info.scce.cinco.product.fp.pcconfig/model/Mainboard.mgl" as mb
+
+@primeviewer
+@mcam("check")
+@mcam_checkmodule("info.scce.cinco.product.fp.pcconfig.compdsl.checks.FormfaktorCheck")
+@mcam_checkmodule("info.scce.cinco.product.fp.pcconfig.compdsl.checks.AnzahlDerLaufwerkCheck")
+@mcam_checkmodule("info.scce.cinco.product.fp.pcconfig.compdsl.checks.DriveCheck")
+@mcam_checkmodule("info.scce.cinco.product.fp.pcconfig.compdsl.checks.LeistungsCheck")
+@generatable("info.scce.cinco.product.fp.pcconfig.compdsl.generator.Generator", "PC-gen")
+@style("model/Configurator.style")
+graphModel PC {
+	package info.scce.cinco.product.fp.pcconfig.pc
+	nsURI "http://cinco.scce.info/product/pc"
+	diagramExtension "pc"
+	
+	containableElements(ContainerCase[1,1])
+	 //TODO Define the PC model
+
+//////////////////////Case////////////////////////////////////
+@disable(resize)
+@postCreate("info.scce.cinco.product.fp.pcconfig.hooks.PostCreatePC")
+@style (caseContainer, "${caseC.displayName}")
+	container ContainerCase {
+		@pvFileExtension("comp")
+		@pvLabel(name)
+		prime comp.Case as caseC
+		containableElements (ContainerPSU[1,1],ContainerMainboard[1,1],ContainerDrive) 
+	}	
+
+//////////////////Container//////////////////////
+@disable(resize,delete,move,create)
+@style (psuContainer, "${name}")
+	container ContainerPSU {
+		attr EString as name
+		containableElements (PSU[1,1])
+	}
+
+@disable(resize,delete,move,create)
+@style (driveContainer, "${name}")
+	container ContainerDrive {
+		attr EString as name
+		containableElements (Drive[0,1])
+	}
+
+@disable(resize,delete,move,create)
+@style (mainboardContainer, "${name}")
+	container ContainerMainboard {
+		attr EString as name
+		containableElements (Mainboard[1,1])
+	}
+	
+///////////Primereferences////////////////////
+@postCreate("info.scce.cinco.product.fp.pcconfig.hooks.DrivePostCreate")
+@disable(resize)
+@style (driveRectangle, "${drive.displayName}")
+	node Drive {
+		@pvFileExtension("comp")
+		@pvLabel(name)
+		prime comp.Drive as drive
+	}
+
+@postCreate("info.scce.cinco.product.fp.pcconfig.hooks.PSUPostCreate")	
+@disable(resize)
+@style (psuRectangle, "${psu.displayName}")
+	node PSU {
+		@pvFileExtension("comp")
+		@pvLabel(name)
+		prime comp.PSU as psu
+	}
+
+@postCreate("info.scce.cinco.product.fp.pcconfig.hooks.NodeMainboardPostCreate")	
+@disable(resize)
+@style (mainboardRectangle)
+	node Mainboard {
+		@pvFileExtension("mb")
+		prime mb::Mainboard as mainboard
+		//attr EString as name
+	}
+}
